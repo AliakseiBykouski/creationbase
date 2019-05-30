@@ -2,8 +2,6 @@
 
 namespace Creationmedia\Utilities\Cache;
 
-use CreationMedia\CloudWatchLogger\Logger;
-
 trait OverLoadedCacheTrait
 {
     public function deleteSome($key)
@@ -20,8 +18,6 @@ trait OverLoadedCacheTrait
     }
     public function delete($id)
     {
-        Logger::debug('DELETING '.$this->getNamespacedId($id));
-
         return $this->doDelete($this->getNamespacedId($id));
     }
 

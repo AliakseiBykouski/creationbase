@@ -8,7 +8,6 @@ use CreationMedia\Utilities\Cache\DeleteSomeInterface;
 use CreationMedia\Utilities\Cache\Driver\FilesystemCache;
 use CreationMedia\Utilities\Cache\Driver\MemcachedCache;
 use CreationMedia\Utilities\Cache\Driver\RedisCache;
-use CreationMedia\CloudWatchLogger\Logger;
 
 class Cache
 {
@@ -102,8 +101,6 @@ class Cache
         if (Config::get('CACHE_DISABLE') == 'true') {
             return false;
         }
-
-        Logger::debug(sprintf('Cache: Setting \'%s\'', $key));
         $this->driver->save($key, serialize($val), $ttl);
 
         return $this;
@@ -124,9 +121,7 @@ class Cache
     }
     public function clear($key)
     {
-        Logger::debug(sprintf('Cache: Clearing \'%s\'', $key));
-
-        return strpos($key, '*') !== false ? $this->driver->deleteSome($key) : $this->driver->delete($key);
+      return strpos($key, '*') !== false ? $this->driver->deleteSome($key) : $this->driver->delete($key);
     }
     public function clearWildcard($key, $ids = array())
     {
@@ -146,7 +141,6 @@ class Cache
         } else {
             $message .= ' (MISS)';
         }
-        // Logger::debug($message);
 
         return unserialize($value);
     }
@@ -164,7 +158,6 @@ class Cache
     }
     public function resetTwig()
     {
-        Logger::info(sprintf('Resetting twig'));
         $twig = new Twig();
         $dir = $twig->getCache();
 
