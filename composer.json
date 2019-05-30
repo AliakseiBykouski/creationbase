@@ -8,7 +8,7 @@
     "twig/twig": "^2.4",
     "twig/extensions": "^1.5",
     "doctrine/cache": "1.6",
-    "creation-agency/cloudwatch-logger": "1.0"
+    "creation-agency/cloudwatch-logger": "^1.0"
   },
   "authors": [
     {
