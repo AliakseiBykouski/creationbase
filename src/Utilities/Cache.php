@@ -8,14 +8,15 @@ use CreationMedia\Utilities\Cache\DeleteSomeInterface;
 use CreationMedia\Utilities\Cache\Driver\FilesystemCache;
 use CreationMedia\Utilities\Cache\Driver\MemcachedCache;
 use CreationMedia\Utilities\Cache\Driver\RedisCache;
+use CreationMedia\CloudWatchLogger\Logger;
 
-class Cache {
-
+class Cache
+{
   protected static $_instance;
-
   public $driver;
 
-  public static function instance() {
+  public static function instance()
+  {
     if (!self::$_instance) {
       self::$_instance = new self();
     }
@@ -23,10 +24,12 @@ class Cache {
     return self::$_instance;
   }
 
-  protected function __construct() {
+  protected function __construct()
+  {
   }
 
-  public function load($dsn, $prefix = '') {
+  public function load($dsn, $prefix = '')
+  {
     if ($this->driver) {
       return;
     }
@@ -69,8 +72,7 @@ class Cache {
         $cacheDriver->setRedis($redis);
         break;
       default:
-        throw new CacheException\UnknownCacheTypeException(sprintf('Unsupported cache type "%s" supplied in DSN',
-          $dsn[0]));
+        throw new CacheException\UnknownCacheTypeException(sprintf('Unsupported cache type "%s" supplied in DSN', $dsn[0]));
         break;
 
     }
@@ -80,7 +82,8 @@ class Cache {
     return $this;
   }
 
-  public function getOrSet($key, callable $getter, $ttl = NULL) {
+  public function getOrSet($key, callable $getter, $ttl = null)
+  {
     if (!$this->exists($key, $out)) {
       $out = call_user_func($getter);
       if ($out) {
@@ -90,83 +93,87 @@ class Cache {
 
     return $out;
   }
-
-  public function index($key, $ids) {
+  public function index($key, $ids)
+  {
     trigger_error('index is not supported by cache', E_USER_WARNING);
   }
-
-  public function set($key, $val, $ttl = NULL) {
+  public function set($key, $val, $ttl = null)
+  {
     if (Config::get('CACHE_DISABLE') == 'true') {
-      return FALSE;
+      return false;
     }
+
+    Logger::debug(sprintf('Cache: Setting \'%s\'', $key));
     $this->driver->save($key, serialize($val), $ttl);
 
     return $this;
   }
-
-  public function list() {
+  public function list()
+  {
     return $this->driver->getAllKeys();
   }
-
-  public function exists($key, &$value = NULL) {
+  public function exists($key, &$value = null)
+  {
     if (Config::get('CACHE_DISABLE') == 'true') {
-      return FALSE;
+      return false;
     }
 
     $value = $this->get($key);
 
-    return $value == TRUE;
+    return  $value == true;
   }
+  public function clear($key)
+  {
+    Logger::debug(sprintf('Cache: Clearing \'%s\'', $key));
 
-  public function clear($key) {
-    return strpos($key,
-      '*') !== FALSE ? $this->driver->deleteSome($key) : $this->driver->delete($key);
+    return strpos($key, '*') !== false ? $this->driver->deleteSome($key) : $this->driver->delete($key);
   }
-
-  public function clearWildcard($key, $ids = []) {
-    trigger_error('clear wildcard should not be called, use clear instrad.',
-      E_USER_DEPRECATED);
+  public function clearWildcard($key, $ids = array())
+  {
+    trigger_error('clear wildcard should not be called, use clear instrad.', E_USER_DEPRECATED);
 
     return $this->clear($key);
   }
-
-  public function reset($suffix = NULL, $lifetime = 0) {
+  public function reset($suffix = null, $lifetime = 0)
+  {
     return $this->driver->deleteAll();
   }
-
-  public function get($key) {
+  public function get($key)
+  {
     $message = sprintf('Cache: Getting \'%s\'', $key);
     if ($value = $this->driver->fetch($key)) {
       $message .= ' (HIT)';
-    }
-    else {
+    } else {
       $message .= ' (MISS)';
     }
+    // Logger::debug($message);
 
     return unserialize($value);
   }
 
-  public function getDriver() {
+  public function getDriver()
+  {
     return $this->driver;
   }
 
-  public function setDriver(DeleteSomeInterface $driver) {
+  public function setDriver(DeleteSomeInterface $driver)
+  {
     $this->driver = $driver;
 
     return $this;
   }
-
-  public function resetTwig() {
+  public function resetTwig()
+  {
+    Logger::info(sprintf('Resetting twig'));
     $twig = new Twig();
     $dir = $twig->getCache();
 
     $di = new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS);
-    $ri = new \RecursiveIteratorIterator($di,
-      \RecursiveIteratorIterator::CHILD_FIRST);
+    $ri = new \RecursiveIteratorIterator($di, \RecursiveIteratorIterator::CHILD_FIRST);
     foreach ($ri as $file) {
       $file->isDir() ? rmdir($file) : unlink($file);
     }
 
-    return TRUE;
+    return true;
   }
 }
