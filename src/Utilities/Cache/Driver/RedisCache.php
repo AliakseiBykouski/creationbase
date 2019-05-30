@@ -6,44 +6,43 @@ use CreationMedia\Utilities\Cache\DeleteSomeInterface;
 use CreationMedia\Utilities\Cache\OverLoadedCacheTrait;
 use Doctrine\Common\Cache;
 
-class RedisCache extends Cache\RedisCache implements DeleteSomeInterface
-{
-    use OverLoadedCacheTrait;
+class RedisCache extends Cache\RedisCache implements DeleteSomeInterface {
 
-    protected function getFilename($id)
-    {
-        $filename = $id;
+  use OverLoadedCacheTrait;
 
-        return $this->directory
-            .DIRECTORY_SEPARATOR
-            .$filename
-            .$this->extension;
-    }
+  protected function getFilename($id) {
+    $filename = $id;
 
-    public function deleteAll()
-    {
-        $keys = $this->getAllKeys();
-        array_walk($keys, [$this, 'delete']);
-    }
-    public function getAllKeys()
-    {
-        return array_map(
-            function ($key) {
-                return substr($key, strlen($this->getNamespace()) + 1);
-            },
-            array_filter($this->getRedis()->keys('*'), function ($key) {
-                return substr($key, 0, strlen($this->getNamespace()) + 1) === sprintf('%s.', $this->getNamespace());
-            }));
-    }
+    return $this->directory
+      . DIRECTORY_SEPARATOR
+      . $filename
+      . $this->extension;
+  }
 
-    public function getKeys($filter = null)
-    {
-        return array_filter($this->getAllKeys(), function ($key) use ($filter) {
-            if (!$filter) {
-                return true;
-            }
+  public function deleteAll() {
+    $keys = $this->getAllKeys();
+    array_walk($keys, [$this, 'delete']);
+  }
 
-            return substr($key, 0, strlen($filter)) === $filter;
-        });
-    }
+  public function getAllKeys() {
+    return array_map(
+      function ($key) {
+        return substr($key, strlen($this->getNamespace()) + 1);
+      },
+      array_filter($this->getRedis()->keys('*'), function ($key) {
+        return substr($key, 0,
+            strlen($this->getNamespace()) + 1) === sprintf('%s.',
+            $this->getNamespace());
+      }));
+  }
+
+  public function getKeys($filter = NULL) {
+    return array_filter($this->getAllKeys(), function ($key) use ($filter) {
+      if (!$filter) {
+        return TRUE;
+      }
+
+      return substr($key, 0, strlen($filter)) === $filter;
+    });
+  }
 }

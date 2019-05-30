@@ -8,32 +8,29 @@ use Doctrine\Common\Cache;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 
-class FilesystemCache extends Cache\FilesystemCache implements DeleteSomeInterface
-{
-    use OverLoadedCacheTrait;
+class FilesystemCache extends Cache\FilesystemCache implements DeleteSomeInterface {
 
-    protected function getFilename($id)
-    {
-        $filename = $id;
+  use OverLoadedCacheTrait;
 
-        return $this->directory
-            .DIRECTORY_SEPARATOR
-            .$filename
-            .$this->extension;
-    }
+  protected function getFilename($id) {
+    $filename = $id;
 
-    public function getAllKeys()
-    {
-        $fly = new Filesystem(new Local($this->directory));
+    return $this->directory
+      . DIRECTORY_SEPARATOR
+      . $filename
+      . $this->extension;
+  }
 
-        return array_map(function ($file) {
-            return $file['extension'];
-        }, $fly->listContents());
-    }
+  public function getAllKeys() {
+    $fly = new Filesystem(new Local($this->directory));
 
-    public function deleteAll()
-    {
-        $keys = $this->getAllKeys();
-        array_walk($keys, [$this, 'delete']);
-    }
+    return array_map(function ($file) {
+      return $file['extension'];
+    }, $fly->listContents());
+  }
+
+  public function deleteAll() {
+    $keys = $this->getAllKeys();
+    array_walk($keys, [$this, 'delete']);
+  }
 }

@@ -1,27 +1,27 @@
 {
-    "name": "creation-agency/creationbase",
-    "require": {
-        "bcosca/fatfree": "^3.6",
-        "aws/aws-sdk-php": "^3.32",
-        "monolog/monolog": "^1.23",
-        "kint-php/kint": "^2.1",
-        "twig/twig": "^2.4",
-        "twig/extensions": "^1.5",
-        "doctrine/cache": "1.6"
+  "name": "creation-agency/creationbase",
+  "require": {
+    "bcosca/fatfree": "^3.6",
+    "aws/aws-sdk-php": "^3.32",
+    "monolog/monolog": "^1.23",
+    "kint-php/kint": "^2.1",
+    "twig/twig": "^2.4",
+    "twig/extensions": "^1.5",
+    "doctrine/cache": "1.6"
+  },
+  "authors": [
+    {
+      "name": "Carey Hiles",
+      "email": "carey.hiles@creation.agency"
     },
-    "authors": [
-        {
-            "name": "Carey Hiles",
-            "email": "carey.hiles@creation.agency"
-        },
-        {
-            "name": "Robert Bourne",
-            "email": "robertbourne86@gmail.com"
-        }
-    ], 
-    "autoload": {
-        "psr-4": {
-            "CreationMedia\\": "./src"
-        }
+    {
+      "name": "Robert Bourne",
+      "email": "robertbourne86@gmail.com"
     }
+  ],
+  "autoload": {
+    "psr-4": {
+      "CreationMedia\\": "./src"
+    }
+  }
 }

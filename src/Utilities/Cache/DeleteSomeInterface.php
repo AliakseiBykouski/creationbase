@@ -2,9 +2,9 @@
 
 namespace CreationMedia\Utilities\Cache;
 
-interface DeleteSomeInterface
-{
-    public function deleteSome($key);
+interface DeleteSomeInterface {
 
-    public function getAllKeys();
+  public function deleteSome($key);
+
+  public function getAllKeys();
 }

@@ -2,6 +2,6 @@
 
 namespace CreationMedia\Exception;
 
-class CacheException extends \CreationMedia\Exception
-{
+class CacheException extends \CreationMedia\Exception {
+
 }
