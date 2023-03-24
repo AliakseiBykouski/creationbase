@@ -3,11 +3,11 @@
   "require": {
     "bcosca/fatfree": "^3.6",
     "aws/aws-sdk-php": "^3.32",
-    "monolog/monolog": "1.24",
+    "monolog/monolog": "^1.24",
     "kint-php/kint": "^2.1",
     "twig/twig": "^2.4",
     "twig/extensions": "^1.5",
-    "doctrine/cache": "1.6.2",
+    "doctrine/cache": "^1.6.2",
     "creation-agency/cloudwatch-logger": "^1.0"
   },
   "authors": [
