@@ -15,7 +15,10 @@ class General {
 
   public static function isAWS() {
     $hv_uuid = @exec('cat /sys/hypervisor/uuid');
-    if ($hv_uuid) {
+    $config = @exec('/opt/elasticbeanstalk/bin/get-config environment');
+    $config = $config ? json_decode($config) : FALSE;
+
+    if ($hv_uuid || $config) {
       return TRUE;
     }
     return FALSE;
