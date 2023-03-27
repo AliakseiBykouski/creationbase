@@ -10,6 +10,12 @@
     "doctrine/cache": "^1.6.2",
     "creation-agency/cloudwatch-logger": "^1.0"
   },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url":  "https://github.com/creation-agency/cloudwatch-logger"
+    }
+  ],
   "authors": [
     {
       "name": "Carey Hiles",

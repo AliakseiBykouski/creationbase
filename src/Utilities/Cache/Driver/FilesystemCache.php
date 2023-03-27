@@ -8,29 +8,48 @@ use Doctrine\Common\Cache;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 
-class FilesystemCache extends Cache\FilesystemCache implements DeleteSomeInterface {
+class FilesystemCache extends Cache\FilesystemCache implements DeleteSomeInterface
+{
 
-  use OverLoadedCacheTrait;
+    protected $extension;
 
-  protected function getFilename($id) {
-    $filename = $id;
+    use OverLoadedCacheTrait;
 
-    return $this->directory
-      . DIRECTORY_SEPARATOR
-      . $filename
-      . $this->extension;
-  }
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct(
+      $directory,
+      $extension = self::EXTENSION,
+      $umask = 0002
+    ) {
+        $this->extension = $extension;
+        parent::__construct($directory, $extension, $umask);
+    }
 
-  public function getAllKeys() {
-    $fly = new Filesystem(new Local($this->directory));
+    protected function getFilename($id)
+    {
+        $filename = $id;
 
-    return array_map(function ($file) {
-      return $file['extension'];
-    }, $fly->listContents());
-  }
+        return $this->directory
+          .DIRECTORY_SEPARATOR
+          .$filename
+          .$this->extension;
+    }
 
-  public function deleteAll() {
-    $keys = $this->getAllKeys();
-    array_walk($keys, [$this, 'delete']);
-  }
+    public function getAllKeys()
+    {
+        $fly = new Filesystem(new Local($this->directory));
+
+        return array_map(function ($file) {
+            return $file['extension'];
+        }, $fly->listContents());
+    }
+
+    public function deleteAll()
+    {
+        $keys = $this->getAllKeys();
+        array_walk($keys, [$this, 'delete']);
+    }
+
 }
