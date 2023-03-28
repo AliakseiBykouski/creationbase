@@ -146,7 +146,7 @@ class Config {
     if (array_key_exists($var, $_ENV)) {
       return $_ENV[$var];
     }
-    elseif (getenv($var)) {
+    elseif (getenv($var) !== NULL) {
       return getenv($var);
     }
     else {
