@@ -37,6 +37,7 @@ class Config {
       new \LocalConfig();
     }
 
+    error_reporting(Config::get('ERROR_REPORTING', (E_ERROR|E_STRICT)));
     $f3->set('DEBUG', Config::get('F3_DEBUG'));
     $f3->set('DB', self::loadDb());
 
@@ -142,12 +143,15 @@ class Config {
    * @throws \Exception
    */
 
-  public static function get($var) {
+  public static function get($var, $default = NULL) {
     if (array_key_exists($var, $_ENV)) {
       return $_ENV[$var];
     }
     elseif (getenv($var) !== NULL) {
       return getenv($var);
+    }
+    elseif (isset($default)) {
+      return $default;
     }
     else {
       throw new \Exception('Unknown variable: ' . $var);
